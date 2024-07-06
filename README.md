@@ -1,8 +1,5 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
-
-Welcome,
-
-This is the Code Institute student template for deploying your third portfolio project, the Python command-line project. The last update to this file was: **May 14, 2024**
+# Annual Waste Data Analyser 
+Welcome to the annual waste data analyser. This is a command line applicatoin built with Python. This program is connected to a google sheet database which stores the data for a fictional waste collection company. The purpose of the program is to anaysle the data from the command line.
 
 ## Reminders
 
