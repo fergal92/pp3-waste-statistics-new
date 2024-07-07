@@ -82,11 +82,14 @@ def update_worksheet(data, worksheet_name):
     worksheet_to_update = SHEET.worksheet(worksheet_name)
     next_empty_row = find_next_empty_row(worksheet_to_update)
 
-    # Ensure we are updating column H only
+    if next_empty_row is None:
+        print(f"Cannot enter data: {worksheet_name} worksheet is full up to row 49.\nYou have entered all the data for this year.")
+        return
 
     # Ensure we are updating column H only
     for i, value in enumerate(data):
-        worksheet_to_update.update_cell(next_empty_row + i, 8, int(value))  # Column H is 8 in 1-based index
+        cell = f'H{next_empty_row + i}'
+        worksheet_to_update.update_acell(cell, value)
 
     print(f"{worksheet_name} worksheet updated successfully\n")
 
@@ -95,8 +98,12 @@ def find_next_empty_row(worksheet):
     Function to find the next empty cell in column H
     """
     col_h = worksheet.col_values(8)  # Column H is index 8 (1-based index)
-    next_empty_index = len(col_h) + 1  # Index of the next empty cell
-    return next_empty_index
+    next_empty_row = len(col_h) + 1  # Index of the next empty cell
+
+    if next_empty_row > 49:
+        return None # No empty rows available within the limit
+        
+    return next_empty_row
 
 def main():
     """
