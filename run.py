@@ -1,7 +1,11 @@
+from dateutil import parser
+
 import gspread
 from google.oauth2.service_account import Credentials
 from tabulate import tabulate
 from pprint import pprint
+from simple_term_menu import TerminalMenu
+
 
 # Scope definition
 SCOPE = [
@@ -43,7 +47,11 @@ def get_monthly_waste_data():
         print("The 2nd number is Black bin waste,")
         print("The 3rd number is Green bin waste,")
         print("The 4th number is Brown bin waste\n")
-
+        print(f"""
+Please enter your waste data from the last month or exit to quit
+Data should be 4 numbers separated by commas
+Example: 180,80,60,40
+        """)
         data_str = input("Enter your data here: ")
 
         if data_str.lower() == "exit":
@@ -130,12 +138,6 @@ def data_entry():
         # Update the selected worksheet with the waste data
         update_worksheet(waste_data, worksheet_name)
 
-def data_analysis():
-    """
-    Function to handle data analysis
-    """
-    print("Data analysis functionality is a work in progress")
-
 def profit_report():
     """
     Function to populate the profit columns in the collector worksheets
@@ -143,28 +145,29 @@ def profit_report():
     price per tonne in the prices worksheet
     """
 
+
 def main():
     """
     Main function to run the program.
     """
     print('Welcome to Waste Data Analyzer')
 
-    while True:
-        print("Please select an option:")
-        print("1. Data Entry")
-        print("2. Data Analysis")
-        print("3. Exit")
-        choice = input("Enter 1, 2 or 3: ").strip()
+    options = ["Data Entry", "Profit Report", "Exit"]
+    terminal_menu = TerminalMenu(options)
     
-        if choice == '1':
+    while True:
+        menu_entry_index = terminal_menu.show()
+        selection = options[menu_entry_index]
+
+        if selection == "Data Entry":
             data_entry()
-            break
-        elif choice == '2':
-            data_analysis()
-        elif choice == '3':
+        elif selection == "Profit Report":
+            profit_report()
+        elif selection == "Exit":
             print("Exiting the program.")
             break
         else:
-            print("Invalid choice. Please enter 1, 2 or 3.\n")
+            print("Invalid choice. Please enter 1, 2, or 3.\n")
 
-main()
+if __name__ == "__main__":
+    main()
