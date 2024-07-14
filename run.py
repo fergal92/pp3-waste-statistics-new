@@ -1,26 +1,26 @@
 from dateutil import parser
+import time
+import os
 
 import gspread
 from google.oauth2.service_account import Credentials
 from tabulate import tabulate
-from pprint import pprint
 from simple_term_menu import TerminalMenu
-import time
-
 
 # Scope definition
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/drive"
-    ]
+]
+
 # Get API google sheet working
 CREDS = Credentials.from_service_account_file("creds.json")
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open("waste_data")
 
-# Function to select worksheet
+
 def select_worksheet():
     """
     Function that selects a collector worksheet using a terminal menu
@@ -34,6 +34,8 @@ def select_worksheet():
         return selection
     else:
         return None
+        
+
 
 def get_integer_input(prompt):
     """
@@ -51,12 +53,13 @@ def get_integer_input(prompt):
         except ValueError:
             print("Invalid input. Please enter a positive integer.")
 
+
 def get_monthly_waste_data():
     """
     Get monthly waste figures input from user using terminal menu
     """
     print("Please enter the weight of the following waste types in Tonnes")
-    print("Values must be poistive and less than or equal to 400")
+    print("Values must be positive and less than or equal to 400")
     prompts = [
         "Enter C & D waste: ",
         "Enter Black bin waste: ",
@@ -70,29 +73,24 @@ def get_monthly_waste_data():
 
     return data
 
+
 def validate_data(values):
     """
     Check if all values are positive integers and exactly 4 values are provided
     """
     try:
-        # Check if all values are positive integers
         if not all(isinstance(value, int) and value >= 0 for value in values):
             raise ValueError("All values must be positive integers.")
-        # Check if exactly 4 values are provided
-        # if len(values) != 4:
-        #     raise ValueError(
-        #         f"Exactly 4 values required, you provided {len(values)}"
-        #     )
     except ValueError as e:
         print(f"Invalid data: {e}, please try again.\n")
         return False
 
     return True
 
+
 def update_worksheet(data, worksheet_name):
     """
-    Receives a list of integers to be inserted into a worksheet
-    Update the relevant worksheet with the data to be provided
+    Update the relevant worksheet with the waste data provided
     Data should be entered into column H
     """
     print(f"Updating {worksheet_name} worksheet...\n")
@@ -110,6 +108,7 @@ def update_worksheet(data, worksheet_name):
 
     print(f"{worksheet_name} worksheet updated successfully\n")
 
+
 def find_next_empty_row(worksheet):
     """
     Function to find the next empty cell in column C
@@ -118,9 +117,10 @@ def find_next_empty_row(worksheet):
     next_empty_row = len(col_c) + 1  # Index of the next empty cell
 
     if next_empty_row > 49:
-        return None # No empty rows available within the limit
-        
+        return None  # No empty rows available within the limit
+
     return next_empty_row
+
 
 def display_worksheet(worksheet_name):
     """
@@ -128,32 +128,30 @@ def display_worksheet(worksheet_name):
     """
     worksheet = SHEET.worksheet(worksheet_name)
     data = worksheet.get_all_values()
-    
+
     print(f"\nCurrent data in {worksheet_name} worksheet:")
     print(tabulate(data, headers="firstrow", tablefmt="grid"))
     print("\n")
+
 
 def data_entry():
     """
     Function to handle data entry
     """
     while True:
-    # Select worksheet
         worksheet_name = select_worksheet()
         if worksheet_name is None:
-                return  # Exit data entry
+            return  # Exit data entry
 
-        # Get monthly waste data
         data = get_monthly_waste_data()
         if data is None:
-                return  # Exit data entry
+            return  # Exit data entry
 
         waste_data = [int(num) for num in data]
 
-        # Update the selected worksheet with the waste data
         update_worksheet(waste_data, worksheet_name)
-        # Display the current worksheet data
         display_worksheet(worksheet_name)
+
 
 def validate_all_data_entered(worksheet):
     """
@@ -164,6 +162,7 @@ def validate_all_data_entered(worksheet):
         if cell.value == '':
             return False
     return True
+
 
 def calculate_profit_for_sheet(worksheet_name):
     """
@@ -179,7 +178,6 @@ def calculate_profit_for_sheet(worksheet_name):
         print(f"Cannot calculate profit: Not all data for the 2023 year has been entered in {worksheet_name}.\n")
         return
 
-    # Get prices data from the 'prices' worksheet
     prices_sheet = SHEET.worksheet('prices')
     prices_data = prices_sheet.get_all_values()
     prices = {
@@ -212,22 +210,20 @@ def calculate_profit_for_sheet(worksheet_name):
 
     total_profit = sum(profits)
 
-    # Update the profit column (D)
     for i, profit in enumerate(profits):
         cell = f'D{i + 2}'
         worksheet.update_acell(cell, profit)
-        time.sleep(1)  # Add a delay to prevent exceeding rate limits
+        time.sleep(1)
 
-    # Update total waste and total profit in cells C50 and D50
     worksheet.update_acell('C50', total_waste)
     worksheet.update_acell('D50', total_profit)
 
     print(f"Profit calculation for {worksheet_name} completed successfully.")
 
-    # display the updated worksheet
     display_worksheet(worksheet_name)
 
     print("Please select another sheet to calculate profit for or choose to return to main menu\n")
+
 
 def calculate_profit():
     """
@@ -237,23 +233,24 @@ def calculate_profit():
         worksheet_name = select_worksheet()
         if worksheet_name is None:
             return  # Exit profit calculation
-    
+
         calculate_profit_for_sheet(worksheet_name)
+
+def clear_screen():
+    """Clears the terminal screen."""
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def main():
     """
     Main function to run the program
     """
-
     print('Welcome to Waste Data Analyzer')
-    print('This program can allow the user to input the waste collected into a database')
-    print('When the waste data is up to date for the year the user can then run calculate the profit and have it displayed to them in table format\n')
-    print('When the data has been entered succesfully, you can run the profit report for 2023\n')
-    
+    print('This program allows the user to input waste collected into a database.')
+    print('Once the waste data is up to date for the year, the user can then calculate the profit and view it in a table format.\n')
 
     options = ["Data Entry", "Calculate Profit", "Exit"]
     terminal_menu = TerminalMenu(options)
-    
+
     while True:
         menu_entry_index = terminal_menu.show()
         selection = options[menu_entry_index]
@@ -263,10 +260,11 @@ def main():
         elif selection == "Calculate Profit":
             calculate_profit()
         elif selection == "Exit":
-            print("Exiting the program.")
+            print("Thank you for using the Waste Data Analyser. \nExiting the program.")
             break
         else:
             print("Invalid choice. Please enter 1, 2, or 3.\n")
+
 
 if __name__ == "__main__":
     main()
