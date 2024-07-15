@@ -24,6 +24,7 @@ def select_worksheet():
     """
     Function that selects a collector worksheet using a terminal menu
     """
+
     options = ["collector-a", "collector-b", "collector-c", "Back to Main Menu"]
     terminal_menu = TerminalMenu(options)
     menu_entry_index = terminal_menu.show()
@@ -125,6 +126,8 @@ def display_worksheet(worksheet_name):
     """
     Fetch and display the current data of the selected worksheet.
     """
+    clear_screen()
+
     worksheet = SHEET.worksheet(worksheet_name)
     data = worksheet.get_all_values()
 
@@ -169,6 +172,8 @@ def calculate_profit_for_sheet(worksheet_name):
     The tonnes collected per waste type will be multiplied by the corresponding 
     price per tonne in the prices worksheet.
     """
+    clear_screen()
+
     print(f"Calculating the profit for the worksheet {worksheet_name}. This may take a while...\n")
 
     worksheet = SHEET.worksheet(worksheet_name)
