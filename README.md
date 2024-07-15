@@ -57,6 +57,7 @@ Link to the GitHub project page that was used to manage the website build. Items
 - [Python](https://www.python.org/)
 - [Am I Responsive](https://ui.dev/amiresponsive) - was used to generate an image of the website across different screen types and resolutions
 - [Heroku](https://id.heroku.com/login) - Was used to deploy and host the project
+- [ASCII Art](https://www.asciiart.eu/) - ASCII art was used to create the welcome page for the project
 
 ## Testing
 Please refer to the [TESTING.md](TESTING.md) file for all testing documentation
@@ -67,12 +68,8 @@ The heroku app was deployed at the begonning of the project to ensure any issues
 
 The live link to the site can be found here https://waste-data-analyser-3742936dc8c7.herokuapp.com/
 
-## Credits
-### Content
-
-### Media
-
 ## Future improvements
+- As noted in the features left to implement section, the project could certainly be improved by adding more data analysis features and by adding graphing and visualisation features
 
 ## Acknowledgements
 - [Iuliia Konovalova](https://github.com/IuliiaKonovalova) - My mentor Julia was very supportive during this project. She certainly pushed me to complete a high standard of project especially for the readme and testing sections. I took inspiration from her README.md and TESTING.md files for my own.
