@@ -1,10 +1,10 @@
-import time
-import os
-
 import gspread
 from google.oauth2.service_account import Credentials
 from tabulate import tabulate
 from simple_term_menu import TerminalMenu
+import time
+import os
+from art import tprint
 
 # Scope definition
 SCOPE = [
@@ -239,13 +239,18 @@ def clear_screen():
     """Clears the terminal screen."""
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def display_welcome_screen():
+    """Display the welcome screen with ASCII art."""
+    clear_screen()
+    tprint("Waste Data\nAnalyzer", font="slant")
+    print('This program allows the user to input waste collected into a database.')
+    print('Once the waste data is up to date for the year, the user can then calculate the profit and view it in a table format.\n')
+
 def main():
     """
     Main function to run the program
     """
-    print('Welcome to Waste Data Analyzer')
-    print('This program allows the user to input waste collected into a database.')
-    print('Once the waste data is up to date for the year, the user can then calculate the profit and view it in a table format.\n')
+    display_welcome_screen()
 
     options = ["Data Entry", "Calculate Profit", "Exit"]
     terminal_menu = TerminalMenu(options)
