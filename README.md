@@ -17,18 +17,12 @@ Access the program here - [Waste Data Analyser](https://waste-data-analyser-3742
 - Create validation parameters for the data 
 - Link the sheet via an API to the program to save all data entered 
 
-### As a user I can use the  program to analyse the data and compare waste collectors for each month and quarter
-#### Acceptance Criteria:
-- Allow the user to compare total collected waste for each month and quarter
-#### Tasks:
-- Create functions that allow comparison of data between sheets
-
 ### As a user I can use the  program to analyse how much profit the waste collecors made 
 #### Acceptance Criteria:
-- Allow the user to see how much gross and net profit was made
+- Allow the user to see how much profit was made
 #### Tasks:
-- Create functions that calculate the tonnes collected with the price list
-- subtract the net profit from the gross profit
+- Create functions that calculate the tonnes collected with the price list to find the profit
+- display the profit to the user
 
 ## Agile Methodologies
 ### GitHub Projects
@@ -36,21 +30,33 @@ Link to the GitHub project page that was used to manage the website build. Items
 
 ## Features
 ### Existing Features
+#### Simple terminal menu
+- Simple terminal menu has been incorporated into the project to ensure seamless and consistent navigation 
+
+#### User input
+- The user can input data into the spreadsheet in order to complete the annual waste collection data.
+- The user is prompted to enter data 4 times as this corresponds to the monthly data for each waste type
+- This data input is validated so that they cannot enter a negative number and they can enter a positive integer up to 400 Tonnes. 400 Tonnes is the upper limit of what the program expects
+- When the user completes a successful data input of all 4 waste types, the current worksheet with the newly entered data is printed to the terminal to show the user where they are at
+
+#### Calculate Profit
+- The user can choose to calculate the profit for one of the three collector sheets.
+- The profit cannot be calculated unless the waste data has been entered for the year. There is a validation in place for that
+- The total waste collected and total profit for the year is calculated and input into the sheet
+- At the end of the profit calculation the current worksheet is printed to the terminal to show the user the profit
 
 ### Features left to implement 
-
+#### Data analysis
+- More comprehensive data analysis features could be implemented to add further value to this project.
+- Graphs could be added to visualise the data.
+- Python packages like Pandas and matplotlib could be utilised to achieve this outcome.
 ## Technologies Used
 - [GitPod](https://www.gitpod.io/) - was used as the main tool to write and edit code.
 - [Git](https://git-scm.com/) - was used for the version control of the website.
 - [GitHub](https://github.com/) - was used to host the code of the website.
 - [Python](https://www.python.org/)
 - [Am I Responsive](https://ui.dev/amiresponsive) - was used to generate an image of the website across different screen types and resolutions
-
-## Design
-### Wireframes
-#### Mobile Wireframes
-
-#### Desktop Wireframes
+- [Heroku](https://id.heroku.com/login) - Was used to deploy and host the project
 
 ## Testing
 Please refer to the [TESTING.md](TESTING.md) file for all testing documentation
