@@ -25,7 +25,9 @@ def select_worksheet():
     Function that selects a collector worksheet using a terminal menu
     """
 
-    options = ["collector-a", "collector-b", "collector-c", "Back to Main Menu"]
+    options = [
+        "collector-a", "collector-b", "collector-c", "Back to Main Menu"
+        ]
     terminal_menu = TerminalMenu(options)
     menu_entry_index = terminal_menu.show()
     selection = options[menu_entry_index]
@@ -34,7 +36,6 @@ def select_worksheet():
         return selection
     else:
         return None
-        
 
 
 def get_integer_input(prompt):
@@ -98,7 +99,10 @@ def update_worksheet(data, worksheet_name):
     next_empty_row = find_next_empty_row(worksheet_to_update)
 
     if next_empty_row is None:
-        print(f"Cannot enter data: {worksheet_name} worksheet is full.\nYou have entered all the data for this year.")
+        print(
+            f"Cannot enter data: {worksheet_name} worksheet is full.\n
+            You have entered all the data for this year."
+            )
         return
 
     # Ensure we are updating column C only
@@ -169,17 +173,23 @@ def validate_all_data_entered(worksheet):
 def calculate_profit_for_sheet(worksheet_name):
     """
     Calculate the profit for a specific collector worksheet.
-    The tonnes collected per waste type will be multiplied by the corresponding 
+    The tonnes collected per waste type will be multiplied by the corresponding
     price per tonne in the prices worksheet.
     """
     clear_screen()
 
-    print(f"Calculating the profit for the worksheet {worksheet_name}. This may take a while...\n")
+    print(
+        f"Calculating the profit for the
+        worksheet {worksheet_name}. This may take some time ...\n"
+        )
 
     worksheet = SHEET.worksheet(worksheet_name)
 
     if not validate_all_data_entered(worksheet):
-        print(f"Cannot calculate profit: Not all data for the 2023 year has been entered in {worksheet_name}.\n")
+        print(
+            f"Cannot calculate profit: Not all data for the
+            2023 year has been entered in {worksheet_name}.\n"
+        )
         return
 
     prices_sheet = SHEET.worksheet('prices')
@@ -226,7 +236,10 @@ def calculate_profit_for_sheet(worksheet_name):
 
     display_worksheet(worksheet_name)
 
-    print("Please select another sheet to calculate profit for or choose to return to main menu\n")
+    print(
+        "Please select another sheet to calculate"
+        "profit for or choose to return to main menu\n"
+        )
 
 
 def calculate_profit():
@@ -240,16 +253,26 @@ def calculate_profit():
 
         calculate_profit_for_sheet(worksheet_name)
 
+
 def clear_screen():
     """Clears the terminal screen."""
     os.system('cls' if os.name == 'nt' else 'clear')
+
 
 def display_welcome_screen():
     """Display the welcome screen with ASCII art."""
     clear_screen()
     tprint("Waste Data\nAnalyzer", font="slant")
-    print('This program allows the user to input waste collected into a database.')
-    print('Once the waste data is up to date for the year, the user can then calculate the profit and view it in a table format.\n')
+    print(
+        'This program allows the user to input waste'
+        'collected into a database.'
+        )
+    print(
+        'Once the waste data is up to date for the year,'
+        'the user can then calculate the'
+        'profit and view it in a table format.\n'
+        )
+
 
 def main():
     """
@@ -269,7 +292,10 @@ def main():
         elif selection == "Calculate Profit":
             calculate_profit()
         elif selection == "Exit":
-            print("Thank you for using the Waste Data Analyser. \nExiting the program.")
+            print(
+                "Thank you for using the Waste Data Analyser.\n"
+                "Exiting the program."
+            )
             break
         else:
             print("Invalid choice. Please enter 1, 2, or 3.\n")
