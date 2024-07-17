@@ -1,9 +1,9 @@
+import time
+import os
 import gspread
 from google.oauth2.service_account import Credentials
 from tabulate import tabulate
 from simple_term_menu import TerminalMenu
-import time
-import os
 from art import tprint
 
 # Scope definition
@@ -21,13 +21,10 @@ SHEET = GSPREAD_CLIENT.open("waste_data")
 
 
 def select_worksheet():
-    """
-    Function that selects a collector worksheet using a terminal menu
-    """
-
+    """Function that selects a collector worksheet using a terminal menu"""
     options = [
         "collector-a", "collector-b", "collector-c", "Back to Main Menu"
-        ]
+    ]
     terminal_menu = TerminalMenu(options)
     menu_entry_index = terminal_menu.show()
     selection = options[menu_entry_index]
@@ -39,9 +36,7 @@ def select_worksheet():
 
 
 def get_integer_input(prompt):
-    """
-    Get integer input from the user using a terminal menu.
-    """
+    """Get integer input from the user using a terminal menu."""
     while True:
         try:
             value = int(input(prompt))
@@ -56,11 +51,13 @@ def get_integer_input(prompt):
 
 
 def get_monthly_waste_data():
-    """
-    Get monthly waste figures input from user using terminal menu
-    """
-    print("Please enter the weight of the following waste types in Tonnes")
-    print("Values must be positive and less than or equal to 400")
+    """Get monthly waste figures input from user using terminal menu"""
+
+    print(
+        f"""Please enter the weight of the following waste types in Tonnes"
+Values must be positive and less than or equal to 400"""
+    )
+
     prompts = [
         "Enter C & D waste: ",
         "Enter Black bin waste: ",
@@ -77,7 +74,8 @@ def get_monthly_waste_data():
 
 def validate_data(values):
     """
-    Check if all values are positive integers and exactly 4 values are provided
+    Check if all values are positive integers
+    and exactly 4 values are provided
     """
     try:
         if not all(isinstance(value, int) and value >= 0 for value in values):
@@ -100,9 +98,10 @@ def update_worksheet(data, worksheet_name):
 
     if next_empty_row is None:
         print(
-            f"Cannot enter data: {worksheet_name} worksheet is full.\n
-            You have entered all the data for this year."
-            )
+            f"""Cannot enter data: {worksheet_name} worksheet is full.
+You have entered all the data for this year.
+            """
+        )
         return
 
     # Ensure we are updating column C only
@@ -114,9 +113,7 @@ def update_worksheet(data, worksheet_name):
 
 
 def find_next_empty_row(worksheet):
-    """
-    Function to find the next empty cell in column C
-    """
+    """Function to find the next empty cell in column C"""
     col_c = worksheet.col_values(3)  # Column C is index 3 (1-based index)
     next_empty_row = len(col_c) + 1  # Index of the next empty cell
 
@@ -127,23 +124,18 @@ def find_next_empty_row(worksheet):
 
 
 def display_worksheet(worksheet_name):
-    """
-    Fetch and display the current data of the selected worksheet.
-    """
+    """Fetch and display the current data of the selected worksheet"""
     clear_screen()
 
     worksheet = SHEET.worksheet(worksheet_name)
     data = worksheet.get_all_values()
 
-    print(f"\nCurrent data in {worksheet_name} worksheet:")
-    print(tabulate(data, headers="firstrow", tablefmt="grid"))
-    print("\n")
+    print(f"""\nCurrent data in {worksheet_name} worksheet:
+{tabulate(data, headers="firstrow", tablefmt="grid")}""")
 
 
 def data_entry():
-    """
-    Function to handle data entry
-    """
+    """Function to handle data entry"""
     while True:
         worksheet_name = select_worksheet()
         if worksheet_name is None:
@@ -161,7 +153,8 @@ def data_entry():
 
 def validate_all_data_entered(worksheet):
     """
-    Validate that all data for the 2023 year has been entered in the worksheet.
+    Validate that all data for the 2023
+    year has been entered in the worksheet.
     """
     data_range = worksheet.range('A1:C49')
     for cell in data_range:
@@ -179,16 +172,16 @@ def calculate_profit_for_sheet(worksheet_name):
     clear_screen()
 
     print(
-        f"Calculating the profit for the
-        worksheet {worksheet_name}. This may take some time ...\n"
-        )
+        f"""Calculating the profit for the
+worksheet {worksheet_name}. This will take several minutes"""
+    )
 
     worksheet = SHEET.worksheet(worksheet_name)
 
     if not validate_all_data_entered(worksheet):
         print(
-            f"Cannot calculate profit: Not all data for the
-            2023 year has been entered in {worksheet_name}.\n"
+            f"""Cannot calculate profit: Not all data for the
+2023 year has been entered in {worksheet_name}."""
         )
         return
 
@@ -237,15 +230,13 @@ def calculate_profit_for_sheet(worksheet_name):
     display_worksheet(worksheet_name)
 
     print(
-        "Please select another sheet to calculate"
+        "Please select another sheet to calculate "
         "profit for or choose to return to main menu\n"
-        )
+    )
 
 
 def calculate_profit():
-    """
-    Function to calculate the profit for a selected collector worksheet.
-    """
+    """Function to calculate the profit for a selected collector worksheet."""
     while True:
         worksheet_name = select_worksheet()
         if worksheet_name is None:
@@ -264,20 +255,18 @@ def display_welcome_screen():
     clear_screen()
     tprint("Waste Data\nAnalyzer", font="slant")
     print(
-        'This program allows the user to input waste'
+        'This program allows the user to input waste '
         'collected into a database.'
-        )
+    )
     print(
-        'Once the waste data is up to date for the year,'
-        'the user can then calculate the'
+        'Once the waste data is up to date for the year, '
+        'the user can then calculate the '
         'profit and view it in a table format.\n'
-        )
+    )
 
 
 def main():
-    """
-    Main function to run the program
-    """
+    """Main function to run the program"""
     display_welcome_screen()
 
     options = ["Data Entry", "Calculate Profit", "Exit"]
@@ -303,3 +292,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
