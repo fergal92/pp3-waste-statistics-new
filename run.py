@@ -5,6 +5,9 @@ from google.oauth2.service_account import Credentials
 from tabulate import tabulate
 from simple_term_menu import TerminalMenu
 from art import tprint
+from art import text2art
+from colorama import Fore, Style, init
+init(autoreset=True)
 
 # Scope definition
 SCOPE = [
@@ -130,11 +133,15 @@ def display_worksheet(worksheet_name):
     worksheet = SHEET.worksheet(worksheet_name)
     data = worksheet.get_all_values()
 
-    print(f"""{worksheet_name} profit sheet:
-{tabulate(data, headers="firstrow", tablefmt="grid")}
+    table = tabulate(data, headers="firstrow", tablefmt="grid")
+    print(f"{worksheet_name} profit report:")
+    print(Fore.GREEN + table)
+    print(
+        Fore.YELLOW + f"""\n{worksheet_name} worksheet data displayed above.
 Scroll to the top of terminal window for start of table\n
 You can select another sheet to
-view the profit for or exit to the main menu\n""")
+view the profit for or exit to the main menu\n"""
+    )
 
 
 def data_entry():
@@ -153,7 +160,8 @@ def data_entry():
         # Check if data already enetered
         if worksheet.acell('C49').value:
             print(
-                f"""Data cannot be entered again for {worksheet_name}.
+                Fore.RED +
+                f"""Data cannot be entered again for {worksheet_name}
 Proceed to profit calcualtion\n"""
             )
             return  # Exit data entry
@@ -166,9 +174,11 @@ Proceed to profit calcualtion\n"""
         waste_data = [int(num) for num in data]
 
         update_worksheet(waste_data, worksheet_name)
-        print("Thank you for updating the figures, "
-"You may now calculate the profit\nSelect a sheet to update or "
-"return to the main menu\n")
+        print(
+            Fore.GREEN + "Thank you for updating the figures, "
+            "You may now calculate the profit\nSelect a sheet to update or "
+            "return to the main menu\n"
+        )
 
 
 def validate_all_data_entered(worksheet):
@@ -192,22 +202,27 @@ def calculate_profit_for_sheet(worksheet_name):
     clear_screen()
 
     print(
-        f"""Calculating the profit for the
-worksheet {worksheet_name}. This may take several minutes"""
+        Fore.YELLOW + f"""Calculating the profit for the
+worksheet {worksheet_name}. This may take several minutes\n"""
     )
 
     worksheet = SHEET.worksheet(worksheet_name)
 
-     # Check if profit has already been calculated
+    # Check if profit has already been calculated
     if worksheet.acell('D50').value:
-        print(f"Profit has already been calculated for {worksheet_name}.")
+        print(
+            Fore.RED +
+            f"Profit has already been calculated for {worksheet_name}."
+        )
         display_worksheet(worksheet_name)
         return False
 
     if not validate_all_data_entered(worksheet):
         print(
+            Fore.RED +
             f"""Cannot calculate profit: Not all data for the
-2023 year has been entered in {worksheet_name}."""
+2023 year has been entered in {worksheet_name}.
+Please select another sheet or return to the main menu\n"""
         )
         return
 
@@ -251,12 +266,15 @@ worksheet {worksheet_name}. This may take several minutes"""
     worksheet.update_acell('C50', total_waste)
     worksheet.update_acell('D50', total_profit)
 
-    print(f"Profit calculation for {worksheet_name} completed successfully.")
+    print(
+        Fore.GREEN +
+        f"Profit calculation for {worksheet_name} completed successfully."
+    )
 
     display_worksheet(worksheet_name)
 
     print(
-        "Please select another sheet to calculate "
+        Fore.YELLOW + "Please select another sheet to calculate "
         "profit for or choose to return to main menu\n"
     )
 
@@ -264,7 +282,7 @@ worksheet {worksheet_name}. This may take several minutes"""
 def calculate_profit():
     """Function to calculate the profit for a selected collector worksheet."""
     clear_screen()
-    print("Select a worksheet to view profit\n")
+    print(Fore.YELLOW + "Select a worksheet to view profit\n")
     while True:
         worksheet_name = select_worksheet()
         if worksheet_name is None:
@@ -281,13 +299,14 @@ def clear_screen():
 def display_welcome_screen():
     """Display the welcome screen with ASCII art."""
     clear_screen()
-    tprint("Waste Data\nAnalyzer", font="slant")
+    ascii_art = text2art("Waste Data\nAnalyzer", font="slant")
+    print(Fore.GREEN + ascii_art)
     print(
-        'This program allows the user to input waste '
+        Fore.YELLOW + 'This program allows the user to input waste '
         'collected into a database.'
     )
     print(
-        'Once the waste data is up to date for the year,\n'
+        Fore.YELLOW + 'Once the waste data is up to date for the year,\n'
         'the user can then calculate the '
         'profit and view it in a table format.\n'
     )
@@ -310,11 +329,10 @@ def main():
         elif selection == "Calculate Profit":
             calculate_profit()
         elif selection == "Exit":
-            print(
-                "Thank you for using the Waste Data Analyser.\n"
-                "Exiting the program."
-            )
             clear_screen()
+            print(
+                Fore.GREEN + "Thank you for using the Waste Data Analyser.\n"
+            )
             break
         else:
             print("Invalid choice. Please enter 1, 2, or 3.\n")
@@ -322,4 +340,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
