@@ -1,5 +1,6 @@
 art==6.2
 cachetools==5.3.3
+colorama==0.4.6
 contourpy==1.2.1
 cycler==0.12.1
 fonttools==4.53.1
