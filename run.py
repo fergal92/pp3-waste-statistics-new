@@ -41,13 +41,13 @@ def get_integer_input(prompt):
         try:
             value = int(input(prompt))
             if value < 0:
-                print("Please enter a positive integer.")
+                print("Please enter a positive whole number.")
             elif value > 400:
                 print("Please enter a value less than or equal to 400 tonnes.")
             else:
                 return value
         except ValueError:
-            print("Invalid input. Please enter a positive integer.")
+            print("Invalid input. Please enter a positive whole number.")
 
 
 def get_monthly_waste_data():
@@ -79,7 +79,7 @@ def validate_data(values):
     """
     try:
         if not all(isinstance(value, int) and value >= 0 for value in values):
-            raise ValueError("All values must be positive integers.")
+            raise ValueError("All values must be positive whole numbers.")
     except ValueError as e:
         print(f"Invalid data: {e}, please try again.\n")
         return False
@@ -130,25 +130,45 @@ def display_worksheet(worksheet_name):
     worksheet = SHEET.worksheet(worksheet_name)
     data = worksheet.get_all_values()
 
-    print(f"""\nCurrent data in {worksheet_name} worksheet:
-{tabulate(data, headers="firstrow", tablefmt="grid")}""")
+    print(f"""{worksheet_name} profit sheet:
+{tabulate(data, headers="firstrow", tablefmt="grid")}
+Scroll to the top of terminal window for start of table\n
+You can select another sheet to
+view the profit for or exit to the main menu\n""")
 
 
 def data_entry():
     """Function to handle data entry"""
+    clear_screen()
+    print("Select a wokrsheet to update\n")
     while True:
         worksheet_name = select_worksheet()
         if worksheet_name is None:
+            clear_screen()
+            return  # Exit data entry
+
+        # Fetch the worksheet before checking D50
+        worksheet = SHEET.worksheet(worksheet_name)
+
+        # Check if data already enetered
+        if worksheet.acell('C49').value:
+            print(
+                f"""Data cannot be entered again for {worksheet_name}.
+Proceed to profit calcualtion\n"""
+            )
             return  # Exit data entry
 
         data = get_monthly_waste_data()
         if data is None:
+            clear_screen()
             return  # Exit data entry
 
         waste_data = [int(num) for num in data]
 
         update_worksheet(waste_data, worksheet_name)
-        display_worksheet(worksheet_name)
+        print("Thank you for updating the figures, "
+"You may now calculate the profit\nSelect a sheet to update or "
+"return to the main menu\n")
 
 
 def validate_all_data_entered(worksheet):
@@ -173,10 +193,16 @@ def calculate_profit_for_sheet(worksheet_name):
 
     print(
         f"""Calculating the profit for the
-worksheet {worksheet_name}. This will take several minutes"""
+worksheet {worksheet_name}. This may take several minutes"""
     )
 
     worksheet = SHEET.worksheet(worksheet_name)
+
+     # Check if profit has already been calculated
+    if worksheet.acell('D50').value:
+        print(f"Profit has already been calculated for {worksheet_name}.")
+        display_worksheet(worksheet_name)
+        return False
 
     if not validate_all_data_entered(worksheet):
         print(
@@ -237,11 +263,13 @@ worksheet {worksheet_name}. This will take several minutes"""
 
 def calculate_profit():
     """Function to calculate the profit for a selected collector worksheet."""
+    clear_screen()
+    print("Select a worksheet to view profit\n")
     while True:
         worksheet_name = select_worksheet()
         if worksheet_name is None:
+            clear_screen()
             return  # Exit profit calculation
-
         calculate_profit_for_sheet(worksheet_name)
 
 
@@ -259,7 +287,7 @@ def display_welcome_screen():
         'collected into a database.'
     )
     print(
-        'Once the waste data is up to date for the year, '
+        'Once the waste data is up to date for the year,\n'
         'the user can then calculate the '
         'profit and view it in a table format.\n'
     )
@@ -273,6 +301,7 @@ def main():
     terminal_menu = TerminalMenu(options)
 
     while True:
+        print("Welcome to the main menu\n")
         menu_entry_index = terminal_menu.show()
         selection = options[menu_entry_index]
 
@@ -285,6 +314,7 @@ def main():
                 "Thank you for using the Waste Data Analyser.\n"
                 "Exiting the program."
             )
+            clear_screen()
             break
         else:
             print("Invalid choice. Please enter 1, 2, or 3.\n")
