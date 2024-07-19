@@ -7,6 +7,8 @@ from simple_term_menu import TerminalMenu
 from art import tprint
 from art import text2art
 from colorama import Fore, Style, init
+
+
 init(autoreset=True)
 
 # Scope definition
