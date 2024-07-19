@@ -116,6 +116,9 @@ The live link to the site can be found [here](https://waste-data-analyser-374293
 ## Credits
 This project would not have been possible without the use of various libraries, packages, and tools. Below is a list of technologies and resources that were instrumental in the development of this project:
 
+### Code Institute - Love Sandwiches Project
+I used this project as inspiration for my project. I based some of my functions and methodology on this project and want to awknowledge this project as the main source of inspiration for my project
+
 ### Libraries and Packages
 - Python: The core programming language used to develop this project.
 - Time Module: Used to manage time-related functions and delays during data operations.
